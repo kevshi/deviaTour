@@ -15,9 +15,11 @@
 # limitations under the License.
 #
 import webapp2
-from handlers import MainHandler, AboutHandler
+from handlers import MainHandler, AboutHandler, ResultsHandler, LoginHandler
 
 app = webapp2.WSGIApplication([
     webapp2.Route('/', MainHandler, name='home'),
     webapp2.Route('/about', AboutHandler, name='about'),
+    webapp2.Route('/results', ResultsHandler, name = 'results'),
+    webapp2.Route('/login', LoginHandler, name = 'login'),
 ], debug=True)

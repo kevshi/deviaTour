@@ -1,7 +1,9 @@
 import jinja2, datetime
 import webapp2, uuid, time, logging, urllib, base64, os
+from webapp2_extras import auth, sessions
 import requests
 from secrets import nokia_app_id, nokia_app_code
+from google.appengine.api import memcache
 
 JINJA_ENVIRONMENT = jinja2.Environment(
 	loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__), '')),
@@ -9,6 +11,13 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 	autoescape=True)
 
 class BaseHandler(webapp2.RequestHandler):
+	@webapp2.cached_property
+    def auth(self):
+        return auth.get_auth(request=self.request)
+
+    @webapp2.cached_property
+    def user_info(self):
+        return self.auth.get_user_by_session()
 
 	def render_template(self, view_filename, params=None):
 		if not params:
@@ -21,6 +30,11 @@ class BaseHandler(webapp2.RequestHandler):
 
 class MainHandler(BaseHandler):
 	def get(self):
+		auth = self.auth
+		if auth.get_user_by_session():
+			user = self.user
+			if user:
+				self.redirect("/about")
 		params = {}
 		self.render_template('templates/home.html', params)
 
@@ -28,6 +42,18 @@ class AboutHandler(BaseHandler):
 	def get(self):
 		params = {}
 		self.render_template('templates/about.html', params)
+
+class ResultsHandler(BaseHandler):
+	def get(self):
+		params = {}
+		self.render_template('templates/results.html', params)
+
+class LoginHandler(BaseHandler):
+	def post(self):
+		self = addResponseHeaders(self)
+		location = self.request.get('username')
+		query = self.request.get('password')
+		self.render_template('templates/home.html', params)
 
 class ContactFormHandler(BaseHandler):
 	def post(self):

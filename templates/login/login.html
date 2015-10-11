@@ -1,0 +1,18 @@
+{% extends "templates/base.html" %}
+{% block maincontent %}
+<div class="row">
+	<form accept-charset='UTF-8' action="/login" method="post" autocomplete="off" class="submitusername">
+		<div class="col-md-offset-2 col-md-4">
+			<input type="text" class="form-control" placeholder="Username/Email" name="username">
+		</div>
+		<div class="col-md-3">
+			<input type="text" class="form-control" placeholder="Password" name="password">
+		</div>
+		<button type="submit" class="btn btn-success" id="usernamesubmit">Submit</button>
+	</form>
+</div>
+{% endblock %}
+{% block addscripts %}
+    <script src="/js/validationhome.js"></script>
+	<script src="/js/autocomplete.js"></script>
+{% endblock addscripts %}
